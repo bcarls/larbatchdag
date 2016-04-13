@@ -1,0 +1,13 @@
+#include "standard_detsim_uboone.fcl"
+
+services.FileCatalogMetadata.applicationVersion: "v04_36_00_02"
+services.FileCatalogMetadata.fileType: "mc"
+services.FileCatalogMetadata.runType: "physics"
+services.FileCatalogMetadataMicroBooNE: {
+  FCLName: "standard_detsim_uboone.fcl"
+  FCLVersion: "v04_36_00_02"
+  ProjectName: "prodcosmics_corsika_inTime_uboone_dag_test"
+  ProjectStage: "detsim"
+  ProjectVersion: "prod_v04_36_00"
+}
+services.TFileMetadataMicroBooNE: @local::microboone_tfile_metadata
