@@ -1,40 +1,37 @@
 
-<serial>  
+<serial>
 jobsub -n -M --group=uboone -N 1 --expected-lifetime=600s --memory=500MB -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/setup_experiment.sh file:///uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/gen/start-gen_secondary-prodcosmics_corsika_inTime_uboone-v04_36_00_02.sh --sam_project prodcosmics_corsika_inTime_uboone_dag_test --sam_defname prodcosmics_corsika_inTime_uboone_dag_test_mcc7_gen --sam_group uboone --sam_station uboone
 </serial>
 
 <serial>
-jobsub -n -M --group=uboone -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/gen/prodcosmics_corsika_inTime_uboone_dag_test/prodcosmics_corsika_cmc_uboone_intime.fcl -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/gen/wrapper.fcl -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/setup_experiment.sh --resource-provides=usage_model=FERMICLOUD_PRIV,DEDICATED,OPPORTUNISTIC,OFFSITE --OS=SL6 -N 1 --expected-lifetime=short file:///uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/gen/gen_secondary-prodcosmics_corsika_inTime_uboone-v04_36_00_02.sh --nfile 1 --group uboone -g -c wrapper.fcl --ups uboonecode  -r v04_36_00_02 -b e9:prof --workdir /pnfs/uboone/scratch/users/bcarls/mcc7/work/v04_36_00_02/gen/prodcosmics_corsika_inTime_uboone_dag_test  --outdir /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/gen/prodcosmics_corsika_inTime_uboone_dag_test --logdir /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/gen/prodcosmics_corsika_inTime_uboone_dag_test -n 200 --njobs 1  --output prodcosmics_corsika_cmc_uboone_\${PROCESS}_%tc_gen.root
-</serial>  
+jobsub -n -M --group=uboone -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/gen/prodcosmics_corsika_inTime_uboone_dag_test/prodcosmics_corsika_cmc_uboone_intime.fcl -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/gen/wrapper.fcl -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/setup_experiment.sh --resource-provides=usage_model=FERMICLOUD_PRIV,DEDICATED,OPPORTUNISTIC,OFFSITE --OS=SL6 -N 1 --expected-lifetime=short file:///uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/gen/gen_secondary-prodcosmics_corsika_inTime_uboone-v04_36_00_02.sh --nfile 1 --group uboone -g -c wrapper.fcl --ups uboonecode -r v04_36_00_02 -b e9:prof --workdir /pnfs/uboone/scratch/users/bcarls/mcc7/work/v04_36_00_02/gen/prodcosmics_corsika_inTime_uboone_dag_test --outdir /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/gen/prodcosmics_corsika_inTime_uboone_dag_test --logdir /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/gen/prodcosmics_corsika_inTime_uboone_dag_test -n 200 --njobs 1 --output prodcosmics_corsika_cmc_uboone_\${PROCESS}_%tc_gen.root
+</serial>
 
-
-<serial>  
+<serial>
 jobsub -n -M --group=uboone -N 1 --expected-lifetime=600s --memory=500MB -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/setup_experiment.sh file:///uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/gen/stop-gen_secondary-prodcosmics_corsika_inTime_uboone-v04_36_00_02.sh --sam_project prodcosmics_corsika_inTime_uboone_dag_test --sam_station uboone
-</serial>  
+</serial>
 
-<serial>  
+<serial>
 jobsub -n -M --group=uboone -N 1 --expected-lifetime=600s --memory=500MB -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/setup_experiment.sh file:///uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/g4/start-g4_secondary-prodcosmics_corsika_inTime_uboone-v04_36_00_02.sh --sam_project prodcosmics_corsika_inTime_uboone_dag_test --sam_defname prodcosmics_corsika_inTime_uboone_dag_test_mcc7_g4 --sam_group uboone --sam_station uboone
-</serial>  
+</serial>
 
+<serial>
+jobsub -n -M --group=uboone --memory=7500MB -f /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/gen/prodcosmics_corsika_inTime_uboone_dag_test/\${JOBSUBPARENTJOBID}/\${JOBSUBPARENTJOBID}_\${PROCESS}/file_location_gen.txt -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/g4/standard_g4_uboone.fcl -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/g4/wrapper.fcl -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/setup_experiment.sh --resource-provides=usage_model=FERMICLOUD_PRIV,DEDICATED,OPPORTUNISTIC,OFFSITE --OS=SL6 -N 1 --expected-lifetime=short file:///uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/g4/g4_secondary-prodcosmics_corsika_inTime_uboone-v04_36_00_02.sh --nfile 1 --group uboone -g -c wrapper.fcl --ups uboonecode -r v04_36_00_02 -b e9:prof --workdir /pnfs/uboone/scratch/users/bcarls/mcc7/work/v04_36_00_02/g4/prodcosmics_corsika_inTime_uboone_dag_test --outdir /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/g4/prodcosmics_corsika_inTime_uboone_dag_test --logdir /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/g4/prodcosmics_corsika_inTime_uboone_dag_test -n 200 --njobs 1 --output prodcosmics_corsika_cmc_uboone_\${PROCESS}_%tc_g4.root --source-list \${CONDOR_DIR_INPUT}/file_location_gen.txt
+</serial>
 
+<serial>
+jobsub -n -M --group=uboone -N 1 --expected-lifetime=600s --memory=500MB -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/g4/setup_experiment.sh file:///uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/g4/stop-g4_secondary-prodcosmics_corsika_inTime_uboone-v04_36_00_02.sh --sam_project prodcosmics_corsika_inTime_uboone_dag_test --sam_station uboone
+</serial>
 
-<serial>  
-jobsub -n -M --group=uboone --memory=7500MB -f /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/gen/prodcosmics_corsika_inTime_uboone_dag_test/\${JOBSUBPARENTJOBID}/\${JOBSUBPARENTJOBID}_\${PROCESS}/file_location_gen.txt -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/g4/standard_g4_uboone.fcl -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/g4/wrapper.fcl -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/setup_experiment.sh --resource-provides=usage_model=FERMICLOUD_PRIV,DEDICATED,OPPORTUNISTIC,OFFSITE --site=MWT2,UChicago,Nebraska,Manchester,Hyak_CE,UNIBE-LHEP --OS=SL6 -N 1 --expected-lifetime=short file:///uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/g4/g4_secondary-prodcosmics_corsika_inTime_uboone-v04_36_00_02.sh --nfile 1 --group uboone -g -c wrapper.fcl --ups uboonecode  -r v04_36_00_02  -b e9:prof  --workdir /pnfs/uboone/scratch/users/bcarls/mcc7/work/v04_36_00_02/g4/prodcosmics_corsika_inTime_uboone_dag_test  --outdir /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/g4/prodcosmics_corsika_inTime_uboone_dag_test --logdir /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/g4/prodcosmics_corsika_inTime_uboone_dag_test  -n 200  --njobs 1  --output prodcosmics_corsika_cmc_uboone_\${PROCESS}_%tc_g4.root --source-list \${CONDOR_DIR_INPUT}/file_location_gen.txt
-</serial>  
+<serial>
+jobsub -n -M --group=uboone -N 1 --expected-lifetime=600s --memory=500MB -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/setup_experiment.sh file:///uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/detsim/start-detsim_secondary-prodcosmics_corsika_inTime_uboone-v04_36_00_02.sh --sam_project prodcosmics_corsika_inTime_uboone_dag_test --sam_defname prodcosmics_corsika_inTime_uboone_dag_test_mcc7_detsim --sam_group uboone --sam_station uboone
+</serial>
 
-<serial>  
-jobsub -n -M --group=uboone   -N 1 --expected-lifetime=600s --memory=500MB -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/g4/setup_experiment.sh file:///uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/g4/stop-g4_secondary-prodcosmics_corsika_inTime_uboone-v04_36_00_02.sh --sam_project prodcosmics_corsika_inTime_uboone_dag_test --sam_station uboone
-</serial>  
+<serial>
+jobsub -n -M --group=uboone --memory=4000MB -f /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/g4/prodcosmics_corsika_inTime_uboone_dag_test/\${JOBSUBPARENTJOBID}/\${JOBSUBPARENTJOBID}_\${PROCESS}/file_location_g4.txt -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/detsim/standard_detsim_uboone.fcl -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/detsim/wrapper.fcl -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/setup_experiment.sh --resource-provides=usage_model=FERMICLOUD_PRIV,DEDICATED,OPPORTUNISTIC,OFFSITE --OS=SL6 -N 1 --expected-lifetime=short file:///uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/detsim/detsim_secondary-prodcosmics_corsika_inTime_uboone-v04_36_00_02.sh --nfile 1 --group uboone -g -c wrapper.fcl --ups uboonecode -r v04_36_00_02 -b e9:prof --workdir /pnfs/uboone/scratch/users/bcarls/mcc7/work/v04_36_00_02/detsim/prodcosmics_corsika_inTime_uboone_dag_test --outdir /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/detsim/prodcosmics_corsika_inTime_uboone_dag_test --logdir /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/detsim/prodcosmics_corsika_inTime_uboone_dag_test -n 200 --njobs 1 --output prodcosmics_corsika_cmc_uboone_\${PROCESS}_%tc_detsim.root --source-list \${CONDOR_DIR_INPUT}/file_location_g4.txt
+</serial>
 
-<serial>  
-jobsub -n -M --group=uboone   -N 1 --expected-lifetime=600s --memory=500MB -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/setup_experiment.sh file:///uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/detsim/start-detsim_secondary-prodcosmics_corsika_inTime_uboone-v04_36_00_02.sh --sam_project prodcosmics_corsika_inTime_uboone_dag_test --sam_defname prodcosmics_corsika_inTime_uboone_dag_test_mcc7_detsim --sam_group uboone --sam_station uboone
-</serial>  
-
-<serial>  
-jobsub -n -M --group=uboone   --memory=4000MB -f /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/g4/prodcosmics_corsika_inTime_uboone_dag_test/\${JOBSUBPARENTJOBID}/\${JOBSUBPARENTJOBID}_\${PROCESS}/file_location_g4.txt -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/detsim/standard_detsim_uboone.fcl -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/detsim/wrapper.fcl -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/setup_experiment.sh --resource-provides=usage_model=FERMICLOUD_PRIV,DEDICATED,OPPORTUNISTIC,OFFSITE --OS=SL6 -N 1 --expected-lifetime=short file:///uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/detsim/detsim_secondary-prodcosmics_corsika_inTime_uboone-v04_36_00_02.sh --nfile 1 --group uboone -g -c wrapper.fcl --ups uboonecode  -r v04_36_00_02  -b e9:prof  --workdir /pnfs/uboone/scratch/users/bcarls/mcc7/work/v04_36_00_02/detsim/prodcosmics_corsika_inTime_uboone_dag_test  --outdir /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/detsim/prodcosmics_corsika_inTime_uboone_dag_test --logdir /pnfs/uboone/scratch/users/bcarls/mcc7/v04_36_00_02/detsim/prodcosmics_corsika_inTime_uboone_dag_test  -n 200  --njobs 1  --output prodcosmics_corsika_cmc_uboone_\${PROCESS}_%tc_detsim.root  --source-list \${CONDOR_DIR_INPUT}/file_location_g4.txt
-</serial>  
-
-<serial>  
-jobsub -n -M --group=uboone   -N 1 --expected-lifetime=600s --memory=500MB -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/setup_experiment.sh file:///uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/detsim/stop-detsim_secondary-prodcosmics_corsika_inTime_uboone-v04_36_00_02.sh --sam_project prodcosmics_corsika_inTime_uboone_dag_test --sam_station uboone
-</serial>  
+<serial>
+jobsub -n -M --group=uboone -N 1 --expected-lifetime=600s --memory=500MB -f /uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/setup_experiment.sh file:///uboone/app/users/bcarls/LArSoft/lar_production/srcs/larbatchdag/detsim/stop-detsim_secondary-prodcosmics_corsika_inTime_uboone-v04_36_00_02.sh --sam_project prodcosmics_corsika_inTime_uboone_dag_test --sam_station uboone
+</serial>
 
