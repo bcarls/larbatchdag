@@ -998,39 +998,71 @@ elif [ $USE_SAM -eq 0 -a x$INLIST != x ]; then
   NFILE_TOTAL=`cat $INLIST | wc -l`
   echo "Input file list contains $NFILE_TOTAL total files."
 
+
+
+
+
   # If --njobs was specified, calculate how many files
   # to skip and process in this worker.
 
   if [ $NJOBS -ne 0 ]; then
 
-    # Don't allow option --nfile_skip in this case.
-
-    if [ $NFILE_SKIP -ne 0 ]; then
-      echo "Illegal options specified with --njobs."
-      exit 1
-    fi
-
-    # Clamp NJOBS to be a maximum of $NFILE_TOTAL.
-    # This means that workers with $PROCESS >= $NFILE_TOTAL will not have 
-    # any input files to process.
-
-    MYNJOBS=$NJOBS
-    if [ $MYNJOBS -gt $NFILE_TOTAL ]; then
-      MYNJOBS=$NFILE_TOTAL
-    fi
-
-    # Calculate number of files to skip and number of files to process.
-
-    NFILE_SKIP=$(( $PROCESS * $NFILE_TOTAL / $MYNJOBS ))
-    MYNFILE=$(( ( $PROCESS + 1 ) * $NFILE_TOTAL / $MYNJOBS - $NFILE_SKIP ))
-    if [ $MYNFILE -eq 0 -o $NFILE_SKIP -ge $NFILE_TOTAL ]; then
-      echo "This worker did not get any input files."
-      exit 1
-    fi
-    if [ $MYNFILE -lt $NFILE -o $NFILE -eq 0 ]; then
-      NFILE=$MYNFILE
-    fi
+    # --nfile_skip needs to be 0 since we are doing a one to one correspondance from job to job with only one file per input list.
+    NFILE_SKIP=0
+    NFILE=1
+  
   fi
+
+
+
+
+
+
+
+  # If --njobs was specified, calculate how many files
+  # to skip and process in this worker.
+
+  # if [ $NJOBS -ne 0 ]; then
+
+  #   # Don't allow option --nfile_skip in this case.
+
+  #   if [ $NFILE_SKIP -ne 0 ]; then
+  #     echo "Illegal options specified with --njobs."
+  #     exit 1
+  #   fi
+
+  #   # Clamp NJOBS to be a maximum of $NFILE_TOTAL.
+  #   # This means that workers with $PROCESS >= $NFILE_TOTAL will not have 
+  #   # any input files to process.
+
+  #   MYNJOBS=$NJOBS
+  #   if [ $MYNJOBS -gt $NFILE_TOTAL ]; then
+  #     MYNJOBS=$NFILE_TOTAL
+  #   fi
+
+  #   # Calculate number of files to skip and number of files to process.
+
+  #   NFILE_SKIP=$(( $PROCESS * $NFILE_TOTAL / $MYNJOBS ))
+  #   MYNFILE=$(( ( $PROCESS + 1 ) * $NFILE_TOTAL / $MYNJOBS - $NFILE_SKIP ))
+  #   if [ $MYNFILE -eq 0 -o $NFILE_SKIP -ge $NFILE_TOTAL ]; then
+  #     echo "This worker did not get any input files."
+  #     exit 1
+  #   fi
+  #   if [ $MYNFILE -lt $NFILE -o $NFILE -eq 0 ]; then
+  #     NFILE=$MYNFILE
+  #   fi
+  # fi
+
+
+
+
+
+
+
+
+
+
+
 
   # Report number of files to skip and process.
 
@@ -1431,6 +1463,21 @@ if [ $GRID -eq 0 -a $OUTUSER != $CURUSER ]; then
   chmod -R g+rw .
 fi
 
+
+
+# Create a text file with the location of the output file
+for root in *.root; do
+  if grep events ${root}.json; then
+    echo ${root} is an art file.
+    OUTFILE=${root}
+  fi
+done
+
+echo "$OUTDIR/$OUTPUT_SUBDIR/$OUTFILE" > file_location_detsim.txt
+
+
+
+
 # Stash all of the files we want to save in a local
 # directories with a unique name.  Then copy these directories
 # and their contents recursively.
@@ -1444,8 +1491,6 @@ for root in *.root; do
   mv ${root}.json log$subrun
 done
 
-# Create a text file with the location of the output file
-echo "$OUTDIR/$OUTPUT_SUBDIR/$root" > file_location_detsim.txt
 
 # Copy any remaining files into all log subdirectories.
 # These small files get replicated.

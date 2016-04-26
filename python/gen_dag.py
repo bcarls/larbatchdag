@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
-import sys, os, urllib
+import sys, os, urllib, shutil
+import project_utilities
 from xml.dom.minidom import parse
 from project_modules.projectdef import ProjectDef
 
@@ -30,11 +31,12 @@ def main(argv):
     projects = get_projects(xmlfile)
 
     # Print out the dag
-
     # Start by finding the project name. Each project gets its own dag file.
     for project in projects:
         project_name = project.name
         dag_file = open(project_name+".dag", "w")
+
+        previous_outdir = ""
 
         for stage in project.stages:
             
@@ -46,10 +48,15 @@ def main(argv):
             if not os.path.exists(stage.workdir):
                 os.makedirs(stage.workdir)
 
+            # Get the setup_experiment.sh script
+            setupscript = os.path.join(stage.workdir,'setup_experiment.sh')
+            safecopy(project_utilities.get_setup_script_path(), setupscript)
+
+
             # Begin by starting the SAM project.
             dag_file.write("<serial>\n")
             dag_file.write("jobsub -n -M --group=uboone -N 1 --expected-lifetime=600s --memory=500MB")
-            dag_file.write(" -f " + os.environ['PWD'] + "/srcs/larbatchdag/setup_experiment.sh")
+            dag_file.write(" -f " + setupscript)
             dag_file.write(" file://"+ os.environ['PWD']+"/srcs/larbatchdag/scripts/start-project.sh")
             dag_file.write(" --sam_project " + project_name + "_" + stage.name)
             dag_file.write(" --sam_defname " + project_name + "_" + stage.name)
@@ -58,17 +65,50 @@ def main(argv):
             dag_file.write("\n")
             dag_file.write("</serial>")
 
+
+            # Quickly write out the wrapper fcl thingamabob
+
+            wrapper_fcl_name = os.path.join(stage.workdir, 'wrapper.fcl')
+            wrapper_fcl = safeopen(wrapper_fcl_name)
+            wrapper_fcl.write('#include "%s"\n' % os.path.basename(stage.fclname))
+            wrapper_fcl.write('\n')
+
+            # Generate overrides for sam metadata fcl parameters.
+            # Only do this if our xml file appears to contain sam metadata.
+            xml_has_metadata = project.file_type != '' or \
+                               project.run_type != ''
+            
+            if xml_has_metadata:
+                # Add overrides for FileCatalogMetadata.
+                if project.release_tag != '':
+                    wrapper_fcl.write('services.FileCatalogMetadata.applicationVersion: "%s"\n' % \
+                                          project.release_tag)
+                else:
+                    wrapper_fcl.write('services.FileCatalogMetadata.applicationVersion: "test"\n')
+                if project.file_type:
+                    wrapper_fcl.write('services.FileCatalogMetadata.fileType: "%s"\n' % \
+                                      project.file_type)
+                if project.run_type:
+                    wrapper_fcl.write('services.FileCatalogMetadata.runType: "%s"\n' % \
+                                      project.run_type)
+                # Add experiment-specific sam metadata.
+                sam_metadata = project_utilities.get_sam_metadata(project, stage)
+                if sam_metadata:
+                    wrapper_fcl.write(sam_metadata)
+
+            wrapper_fcl.close()
+
             # Continue with the stage
             dag_file.write("\n")
             dag_file.write("<serial>\n")
             dag_file.write("jobsub -n -M --group=uboone") 
             if stage.name == "g4": 
-                dag_file.write(" -f " + stage.outdir + "/gen/" + project_name + "/\${JOBSUBPARENTJOBID}/\${JOBSUBPARENTJOBID}_\${PROCESS}/file_location_gen.txt")
+                dag_file.write(" -f " + previous_outdir + "/\${JOBSUBPARENTJOBID}/\${JOBSUBPARENTJOBID}_\${PROCESS}/file_location_gen.txt")
             if stage.name == "detsim": 
-                dag_file.write(" -f " + stage.outdir + "/g4/" + project_name + "/\${JOBSUBPARENTJOBID}/\${JOBSUBPARENTJOBID}_\${PROCESS}/file_location_g4.txt")
+                dag_file.write(" -f " + previous_outdir + "/\${JOBSUBPARENTJOBID}/\${JOBSUBPARENTJOBID}_\${PROCESS}/file_location_g4.txt")
             dag_file.write(" -f " + stage.fclname)
-            dag_file.write(" -f " + os.environ['PWD'] + "/srcs/larbatchdag/" + stage.name +  "/wrapper.fcl")
-            dag_file.write(" -f " + os.environ['PWD'] + "/srcs/larbatchdag/setup_experiment.sh")
+            dag_file.write(" -f " + wrapper_fcl_name )
+            dag_file.write(" -f " + setupscript)
             dag_file.write(" --resource-provides=usage_model=" + stage.resource)
             dag_file.write(" " + stage.jobsub)
             dag_file.write(" --OS=" + project.os)
@@ -90,18 +130,19 @@ def main(argv):
             dag_file.write("\n")
             dag_file.write("</serial>\n")
 
+
             # End by stopping the SAM project
 
             dag_file.write("<serial>\n")
             dag_file.write("jobsub -n -M --group=uboone -N 1 --expected-lifetime=600s --memory=500MB")
-            dag_file.write(" -f " + os.environ['PWD'] + "/srcs/larbatchdag/setup_experiment.sh")
+            dag_file.write(" -f " + setupscript)
             dag_file.write(" file://"+ os.environ['PWD']+"/srcs/larbatchdag/scripts/stop-project.sh")
             dag_file.write(" --sam_project " + project_name + "_" + stage.name)
             dag_file.write(" --sam_station uboone")
             dag_file.write("\n")
             dag_file.write("</serial>\n")
             
-
+            previous_outdir = stage.outdir
 
         dag_file.close()
 
@@ -165,6 +206,27 @@ def get_projects(xmlfile):
 
 
 
+
+# Function for opening files for writing using either python's built-in
+# file object or SafeFile for dCache/pnfs files, as appropriate.
+
+def safeopen(destination):
+    #if destination[0:6] == '/pnfs/':
+    #    file = SafeFile(destination)
+    #else:
+    if project_utilities.safeexist(destination):
+        os.remove(destination)
+    file = open(destination, 'w')
+    return file
+
+
+
+# Function for copying files.  Can be safely used for copying files to dCache.
+
+def safecopy(source, destination):
+    if project_utilities.safeexist(destination):
+        os.remove(destination)
+    shutil.copy(source, destination)
 
 
 

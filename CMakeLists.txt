@@ -62,11 +62,7 @@ find_ups_boost( v1_53_0 )
 cet_find_library( PQ NAMES pq PATHS ENV POSTGRESQL_LIBRARIES NO_DEFAULT_PATH )
 
 # ADD SOURCE CODE SUBDIRECTORIES HERE
-add_subdirectory(gen)
-add_subdirectory(g4)
-add_subdirectory(detsim)
 add_subdirectory(python)
-add_subdirectory(scripts)
 
 # ups - table and config files
 add_subdirectory(ups)

@@ -1409,6 +1409,19 @@ if [ $GRID -eq 0 -a $OUTUSER != $CURUSER ]; then
   chmod -R g+rw .
 fi
 
+
+# Create a text file with the location of the output file
+for root in *.root; do
+  if grep events ${root}.json; then
+    echo ${root} is an art file.
+    OUTFILE=${root}
+  fi
+done
+
+echo "$OUTDIR/$OUTPUT_SUBDIR/$OUTFILE" > file_location_gen.txt
+
+
+
 # Stash all of the files we want to save in a local
 # directories with a unique name.  Then copy these directories
 # and their contents recursively.
@@ -1421,9 +1434,6 @@ for root in *.root; do
   mv $root out$subrun
   mv ${root}.json log$subrun
 done
-
-# Create a text file with the location of the output file
-echo "$OUTDIR/$OUTPUT_SUBDIR/$root" > file_location_gen.txt
 
 # Copy any remaining files into all log subdirectories.
 # These small files get replicated.
