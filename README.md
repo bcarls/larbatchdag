@@ -1,3 +1,5 @@
+# This is depreciated, go to GitLab
+
 # larbatchdag
 
 This contains scripts that can assist in launching jobs via dags. To get it in a LArSoft installation:
